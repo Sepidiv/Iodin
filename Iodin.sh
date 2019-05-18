@@ -32,6 +32,16 @@ else
 fi >> $1.stscs
 echo "--------参--------" >> $1.stscs
 cat $fNam.stscs | sed -n '/-零-/,/-壱-/p' | sed '/^--------/d' | awk -F'=>' '{NF-=1}1' | sed 's/ /=>/g' > clstmpr
-$(cat ~/.SepiDiv)/Iodin/chain.sh
+touch clsmrk
+for line in $(cat clstmpr); do
+	if [ $(cat clsmrk | grep $line | wc -l) = 0 ]; then
+		echo $line | tee -a clsmrk &> /dev/null
+	fi;
+done
+for i in $(cat clsmrk); do
+	for j in $(cat clsmrk); do
+		echo \"$i\",\"$j\";
+	done;
+done | sort >> $1.stscs
 echo '--------肆--------' >> $1.stscs
 rm cls*
