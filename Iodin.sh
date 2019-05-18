@@ -5,15 +5,15 @@ NuMsinCls () {
 NuMsinSub () {
 	for i in $(echo $1 | tr ' ' "\n" | grep '('); do
 		i=$(echo -ne $i | sed 's/(//g')
-		echo -ne "$(cat $fNam.stscs | sed -n '/壹/,/貳/p' | grep $i --count)∃$i "
+		echo -ne "$(cat $fNam.stscs | sed -n '/-零-/,/-壱-/p' | grep $i --count)∃$i "
 	done | sed 's/ /\n/g' | sort --general-numeric-sort --reverse |sed 's/\n/ /g'
 }
 arra=$(cat $1 | grep '\[' | sed 's/\[//g')
 # ara ara :)
 fNam=$1
-echo "--------壹--------" > $1.stscs
+echo "--------零--------" > $1.stscs
 for i in $(cat $1 | sort --general-numeric-sort | grep -v "(\|)\|\[\|\]" | sed 's/\t//g'); do $(cat ~/.SepiDiv)/Argon/Argon.sh -f $1 -w $i; done >> $1.stscs
-echo "--------貳--------" >> $1.stscs
+echo "--------壱--------" >> $1.stscs
 for i in $arra; do
 	cat $1 | sed -n "/^\[$i/,/^\]$/p" > cls$i;
 	echo -ne "$(NuMsinCls $i)Ɐ$i ";
@@ -22,13 +22,16 @@ for i in $arra; do
 	echo $(cat clsArra | sort --general-numeric-sort --reverse)
 	echo -ne "\n"
 done | sort --general-numeric-sort --reverse | sed '/^$/d' >> $1.stscs
-echo "--------參--------" >> $1.stscs
-chek1=$(cat $fNam.stscs | sed -n '/壹/,/貳/p' | sed '/^--------/d' | sed 's/.*=>//g' | sort | uniq --count | wc -l)
-chek2=$(cat $fNam.stscs | sed -n '/壹/,/貳/p' | sed '/^--------/d' | wc -l)
+echo "--------弐--------" >> $1.stscs
+chek1=$(cat $fNam.stscs | sed -n '/-零-/,/-壱-/p' | sed '/^--------/d' | sed 's/.*=>//g' | sort | uniq --count | wc -l)
+chek2=$(cat $fNam.stscs | sed -n '/-零-/,/-壱-/p' | sed '/^--------/d' | wc -l)
 if [ $chek1 = $chek2 ]; then
 	echo "開"
 else
 	echo "閉"
 fi >> $1.stscs
-echo "--------肆--------" >> $1.stscs
+echo "--------参--------" >> $1.stscs
+cat $fNam.stscs | sed -n '/-零-/,/-壱-/p' | sed '/^--------/d' | awk -F'=>' '{NF-=1}1' | sed 's/ /=>/g' > clstmpr
+$(cat ~/.SepiDiv)/Iodin/chain.sh
+echo '--------肆--------' >> $1.stscs
 rm cls*
