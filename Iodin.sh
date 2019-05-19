@@ -30,7 +30,7 @@ if [ $chek1 = $chek2 ]; then
 else
 	echo "閉"
 fi >> $1.stscs
-echo "--------参--------" >> $1.stscs
+echo "--------酸--------" >> $1.stscs
 cat $fNam.stscs | sed -n '/-零-/,/-壱-/p' | sed '/^--------/d' | awk -F'=>' '{NF-=1}1' | sed 's/ /=>/g' > clstmpr
 touch clsmrk
 for line in $(cat clstmpr); do
@@ -40,8 +40,28 @@ for line in $(cat clstmpr); do
 done
 for i in $(cat clsmrk); do
 	for j in $(cat clsmrk); do
-		echo \"$i\",\"$j\";
+		echo $i,$j;
 	done;
-done | sort >> $1.stscs
+done | sort >> clsMarkov
+for i in $(seq 1 $(($(cat clstmpr | wc -l) - 1))); do
+	line=$(echo $(sed "${i}q;d" clstmpr),$(sed "$(($i+1))q;d" clstmpr))
+	cat clsMarkov | grep "$line" --line-number | sed 's/ *:.*//g'
+done | sort > clsNums
+for i in $(seq 1 $(($(cat clsMarkov | wc -l)))); do
+	line=$(cat clsNums | grep --count $i)
+	echo $iが$line
+done >> $1.stscs
+echo '--------死--------' >> $1.stscs
+echo "--------参--------" >> $1.stscs
+res=0
+for line in $(cat $fNam.stscs | sed -n '/-酸-/,/-死-/p' | sed '/^--------/d' | awk -F'が' '{print $2}');do
+	res=$(($res + $line))
+done
+lnCount=1
+for line in $(cat $fNam.stscs | sed -n '/-酸-/,/-死-/p' | sed '/^--------/d' | awk -F'が' '{print $2}');do
+	mrk=$(sed "${lnCount}q;d" clsMarkov); lnCount=$(($lnCount + 1))
+	echo \[$mrk\]:\%$(echo "scale=2;$line / $res * 100" | bc)
+done | sort -t'%' -k2 --general-numeric-sort --reverse | sed 's/.00//g'>> $1.stscs
+sed -i '/-酸-/,/-死-/d' $1.stscs
 echo '--------肆--------' >> $1.stscs
 rm cls*
