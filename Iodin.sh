@@ -79,6 +79,9 @@ if [ ! $2 = '' ]; then
 		zaLasto
 	done
 fi
-cat clstmpr
+#cat clstmpr
 echo '--------伍--------' >> $1.stscs
+cat $fNam.stscs | sed -n '/-零-/,/-弌-/p' | sed '/^--------/d' | awk -F'=>' '{print $NF}' > clsItems
+$(cat ~/.SepiDiv)/Iodin/nth $2 $(echo $(cat clsItems))
+echo '--------陸--------' >> $1.stscs
 rm cls*

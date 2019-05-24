@@ -1,0 +1,18 @@
+#!/bin/bash
+if [ $(($3 - $2)) = $(($4 - $3)) -a $(($5 - $4)) = $(($6 - $5)) ]; then
+	leD=$(($3 - $2))
+	leC=$(($4 - $3 - $3 +$2))
+	LeConta=0
+	lineConta=$(cat clstmpr | wc -l)
+	for i in $(seq 1 $lineConta); do
+		LeConta=$(($LeConta + 1))
+		echo $(($2 + ($i - 1) * $leD + ($i - 1) * ($i - 2) * $leC)) >> clsNumbers
+	done
+	sonoNomba=$(cat clsNumbers | wc --max-line-length)
+	for line in $(cat clsNumbers); do
+		line=$(printf -v line "%0${sonoNomba}d" $line ; echo $line)
+		echo $line
+	done > clsIN
+	sed -i 's/$/=/' clstmpr
+	paste --delimiter='>' clstmpr clsIN
+fi
